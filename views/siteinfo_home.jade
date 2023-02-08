@@ -1,0 +1,59 @@
+extends layout
+block content
+	.container(style="padding-top:35px")
+		.row
+			h1.center-align.selmecAzul.bold(style="font-size: 1.5em") <span data-i18n="demo.manutencao_form.informacao"></span>
+		.row
+			if(Siteinfos == 0)
+				p.center-align.selmecAzul.bold <span data-i18n="demo.site_info.listavazia"></span>
+			else
+				form#siteinfohomepesquisa(class="col s12"  method="POST" onsubmit="return validateForm()" name="siteinfohomepesquisa")
+					.row
+						.col.s12.m6
+						.col.s12.m6.right.input-field
+							i.material-icons.prefix search
+							label(for="pesquisador") <span data-i18n="demo.pesquisar"></span>
+							input(type="text", id="pesquisador", name="pesquisador", style="border-bottom:none !important;")
+			.col.m3.s6
+				.card.hover-reveal.personalised#verTabsSiteInfoTelco
+					.card-image.waves-block
+						img.icn(src="/img/telco.png" style="width:70px" href="/telco")
+					.card-content
+						h6.bold <span data-i18n="demo.manutencao_form.telco"></span>
+			.col.m3.s6
+				.card.hover-reveal.personalised#verTabsDataCenter
+					.card-image.waves-block
+						img.icn(src="/img/datacenter.png" style="width:70px" data-activates='dropdown2')
+					.card-content
+						h6.bold <span data-i18n="demo.manutencao_form.datacenter"></span>
+			.col.m3.s6
+				.card.hover-reveal.personalised#verTabsElectricity
+					.card-image.waves-block
+						img.icn(src="/img/electricity.png" style="width:70px" data-activates='dropdown2')
+					.card-content
+						h6.bold <span data-i18n="demo.manutencao_form.energia"></span>
+			.col.m3.s6
+				.card.hover-reveal.personalised#verTabsClimatizacao
+					.card-image.waves-block
+						img.icn(src="/img/climatizacao.png" style="width:70px" data-activates='dropdown2')
+					.card-content
+						h6.bold <span data-i18n="demo.manutencao_form.climatizacao"></span>
+		
+	block js
+		script.
+			function validateForm() {
+				var pesquisador = document.forms["siteinfohomepesquisa"]["pesquisador"].value;
+				if(pesquisador != ""){
+					document.getElementById("siteinfohomepesquisa").action = "/manutencao/siteinfohomepesquisa";
+				}
+			}
+
+
+			setInterval(function(){document.getElementById("geradorId").className="activarAzul"}, 50);
+			setTimeout(function(){
+				if(window.innerWidth<780){
+					document.getElementById("mySidebar").style.width = "0";
+					document.getElementById("main").style.marginLeft= "0";
+					document.getElementById("main").style.width="100%";
+					document.getElementById("main").style.marginBottom="0";}
+				}, 50);
