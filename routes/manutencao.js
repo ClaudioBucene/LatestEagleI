@@ -1405,17 +1405,221 @@ router.get('/siteinfohomeTelco/nextpage/:contador/:totalnr', async function(req,
 
 
 router.get('/siteinfohomeDataCenter', async function(req, res) {
+	
 	var userData=req.session.usuario;
 	var nome = userData.nome;
-		var data = await siteinfos.find({siteinfo_sitenum:{$in:[1421,1551,2000,2504,4003,5506,6310]}}, {}).sort({ siteinfo_sitenum: 1 }).limit(50);
-		var dataSiteInfo = await siteinfos.find({siteinfo_sitenum:{$in:[1421,1551,2000,2504,4003,5506,6310]}},{});
-	
+
+	var controladorfuncao = 0;
+
+	if (userData.funcao == "Tecnico" || (userData.funcao == "Assistant")){
+		controladorfuncao = 1;
+	}else if(userData.funcao == "regional_manager"){
+		controladorfuncao = 2;
+	}else if (userData.verificador_funcao == "Regional Manager"){
+		controladorfuncao = 3;
+	}else if((userData.funcao = "Call Center") || (userData.funcao = "Back Office") || (userData.nivel_acesso = "admin") || (userData.funcao == "Manager") || (userData.nome == "Teresa Guimaraes") || (userData.departamento_id=="615349880bd5ed0cdc5ea1b8")){
+		controladorfuncao = 4;
+	}else if(userData.nome == "Guest"){
+		controladorfuncao = 5;
+	};
+
+	if(controladorfuncao==4){
+		var data = await siteinfos.find({siteinfo_sitenum:{$nin:[1421,1551,2000,2504,4003,5506,6310]}}, {}).sort({ siteinfo_sitenum: 1 }).limit(50);
+		var dataSiteInfo = await siteinfos.find({},);
 		var total = dataSiteInfo.length;
 		var totalcont = Math.ceil(dataSiteInfo.length/50);
 
-		res.render("datacenter", {DataU:userData, dadostotalnr:totalcont, dadoscontroladordecr:0,dadoscontroladorincr:1, Siteinfos:data, title: 'EAGLEI'});	
+		res.render("datacenter", {DataU:userData, dadostotalnr:totalcont, dadoscontroladordecr:0,dadoscontroladorincr:1, Siteinfos:data, title: 'EAGLEI'});
+	}
+	else
+		if(userData.departamento_id=="61532251699ee012d00db4e7"){ 
+			switch (controladorfuncao) {
+				case 1:
+					var data = await siteinfos.find({siteinfo_sitenum:{$nin:[1421,1551,2000,2504,4003,5506,6310]}, siteinfo_maintoff:nome}, {}).sort({ siteinfo_sitenum: 1 }).limit(50);
+					var dataSiteInfo = await siteinfos.find({},);
+					var total = dataSiteInfo.length;
+					var totalcont = Math.ceil(dataSiteInfo.length/50);
+
+					res.render("datacenter", {DataU:userData, dadostotalnr:totalcont, dadoscontroladordecr:0,dadoscontroladorincr:1, Siteinfos:data, title: 'EAGLEI'});
+				break;
+
+				case 2:
+					var data = await siteinfos.find({siteinfo_sitenum:{$nin:[1421,1551,2000,2504,4003,5506,6310]}, siteinfo_provincia: userData.provincia_trabalho}, {}).sort({ siteinfo_sitenum: 1 }).limit(50);
+					var dataSiteInfo = await siteinfos.find({},);
+					var total = dataSiteInfo.length;
+					var totalcont = Math.ceil(dataSiteInfo.length/50);
+
+					res.render("datacenter", {DataU:userData, dadostotalnr:totalcont, dadoscontroladordecr:0,dadoscontroladorincr:1, Siteinfos:data, title: 'EAGLEI'});
+				break;
+				case 3:
+					var data = await siteinfos.find({siteinfo_sitenum:{$nin:[1421,1551,2000,2504,4003,5506,6310]}, siteinfo_regiaoselmec: userData.regiao}, {}).sort({ siteinfo_sitenum: 1 }).limit(50);
+					var dataSiteInfo = await siteinfos.find({},);
+					var total = dataSiteInfo.length;
+					var totalcont = Math.ceil(dataSiteInfo.length/50);
+
+					res.render("datacenter", {DataU:userData, dadostotalnr:totalcont, dadoscontroladordecr:0,dadoscontroladorincr:1, Siteinfos:data, title: 'EAGLEI'});
+				break;
+				case 5:
+					var data = await siteinfos.find({siteinfo_sitenum:{$nin:[1421,1551,2000,2504,4003,5506,6310]}, siteinfo_client: "Vm,Sa"}, {}).sort({ siteinfo_sitenum: 1 }).limit(50);
+					var dataSiteInfo = await siteinfos.find({},);
+					var total = dataSiteInfo.length;
+					var totalcont = Math.ceil(dataSiteInfo.length/50);
+
+					res.render("datacenter", {DataU:userData, dadostotalnr:totalcont, dadoscontroladordecr:0,dadoscontroladorincr:1, Siteinfos:data, title: 'EAGLEI'});
+				break;
+			}
+		}
 		
 });
+
+router.get('/siteinfohomeDataCenter/previouspage/:contador/:totalnr', async function(req, res) {
+	var userData=req.session.usuario;
+	var nome = userData.nome;
+
+	var incrementadr = parseInt(req.params.contador) - 1;
+	var contador = incrementadr * 50;
+	
+	console.log(contador)
+	console.log(incrementadr)
+
+	var controladorfuncao = 0;
+
+	if (userData.funcao == "Tecnico" || (userData.funcao == "Assistant")){
+		controladorfuncao = 1;
+	}else if(userData.funcao == "regional_manager"){
+		controladorfuncao = 2;
+	}else if (userData.verificador_funcao == "Regional Manager"){
+		controladorfuncao = 3;
+	}else if((userData.funcao = "Call Center") || (userData.funcao = "Back Office") || (userData.nivel_acesso = "admin") || (userData.funcao == "Manager") || (userData.nome == "Teresa Guimaraes") || (userData.departamento_id=="615349880bd5ed0cdc5ea1b8")){
+		controladorfuncao = 4;
+	}else if(userData.nome == "Guest"){
+		controladorfuncao = 5;
+	};
+
+	if(controladorfuncao==4){
+		var data = await siteinfos.find({siteinfo_sitenum:{$nin:[1421,1551,2000,2504,4003,5506,6310]}}, {}).sort({ siteinfo_sitenum: 1 }).skip(contador).limit(50);
+		var dataSiteInfo = await siteinfos.find({},);
+		var total = dataSiteInfo.length;
+		var totalcont = Math.ceil(dataSiteInfo.length/50);
+
+		res.render("datacenter", {DataU:userData, dadostotalnr:parseInt(req.params.totalnr), dadoscontroladordecr:incrementadr, dadoscontroladorincr:parseInt(req.params.contador), Siteinfos:data, title: 'EAGLEI'});
+	}
+	else
+		if(userData.departamento_id=="61532251699ee012d00db4e7"){ 
+			switch (controladorfuncao) {
+				case 1:
+					var data = await siteinfos.find({siteinfo_sitenum:{$nin:[1421,1551,2000,2504,4003,5506,6310]}, siteinfo_maintoff:nome}, {}).sort({ siteinfo_sitenum: 1 }).skip(contador).limit(50);
+					var dataSiteInfo = await siteinfos.find({},);
+					var total = dataSiteInfo.length;
+					var totalcont = Math.ceil(dataSiteInfo.length/50);
+
+					res.render("datacenter", {DataU:userData, dadostotalnr:parseInt(req.params.totalnr), dadoscontroladordecr:incrementadr, dadoscontroladorincr:parseInt(req.params.contador), Siteinfos:data, title: 'EAGLEI'});
+				break;
+
+				case 2:
+					var data = await siteinfos.find({siteinfo_sitenum:{$nin:[1421,1551,2000,2504,4003,5506,6310]}, siteinfo_provincia: userData.provincia_trabalho}, {}).sort({ siteinfo_sitenum: 1 }).skip(contador).limit(50);
+					var dataSiteInfo = await siteinfos.find({},);
+					var total = dataSiteInfo.length;
+					var totalcont = Math.ceil(dataSiteInfo.length/50);
+
+					res.render("datacenter", {DataU:userData, dadostotalnr:parseInt(req.params.totalnr), dadoscontroladordecr:incrementadr, dadoscontroladorincr:parseInt(req.params.contador), Siteinfos:data, title: 'EAGLEI'});
+				break;
+				case 3:
+					var data = await siteinfos.find({siteinfo_sitenum:{$nin:[1421,1551,2000,2504,4003,5506,6310]}, siteinfo_regiaoselmec: userData.regiao}, {}).sort({ siteinfo_sitenum: 1 }).skip(contador).limit(50);
+					var dataSiteInfo = await siteinfos.find({},);
+					var total = dataSiteInfo.length;
+					var totalcont = Math.ceil(dataSiteInfo.length/50);
+
+					res.render("datacenter", {DataU:userData, dadostotalnr:parseInt(req.params.totalnr), dadoscontroladordecr:incrementadr, dadoscontroladorincr:parseInt(req.params.contador), Siteinfos:data, title: 'EAGLEI'});
+				break;
+				case 5:
+					var data = await siteinfos.find({siteinfo_sitenum:{$nin:[1421,1551,2000,2504,4003,5506,6310]}, siteinfo_client: "Vm,Sa"}, {}).sort({ siteinfo_sitenum: 1 }).skip(contador).limit(50);
+					var dataSiteInfo = await siteinfos.find({},);
+					var total = dataSiteInfo.length;
+					var totalcont = Math.ceil(dataSiteInfo.length/50);
+
+					res.render("datacenter", {DataU:userData, dadostotalnr:parseInt(req.params.totalnr), dadoscontroladordecr:incrementadr, dadoscontroladorincr:parseInt(req.params.contador), Siteinfos:data, title: 'EAGLEI'});
+
+				break;
+			}
+		}
+
+});
+
+router.get('/siteinfohomeDataCenter/nextpage/:contador/:totalnr', async function(req, res) {
+	var userData=req.session.usuario;
+	var nome = userData.nome;
+
+	var contador = parseInt(req.params.contador) * 50;
+	var incrementadr = parseInt(req.params.contador) + 1;
+	console.log(contador);
+	console.log(incrementadr);
+
+	var controladorfuncao = 0;
+
+	if (userData.funcao == "Tecnico" || (userData.funcao == "Assistant")){
+		controladorfuncao = 1;
+	}else if(userData.funcao == "regional_manager"){
+		controladorfuncao = 2;
+	}else if (userData.verificador_funcao == "Regional Manager"){
+		controladorfuncao = 3;
+	}else if((userData.funcao = "Call Center") || (userData.funcao = "Back Office") || (userData.nivel_acesso = "admin") || (userData.funcao == "Manager") || (userData.nome == "Teresa Guimaraes") || (userData.departamento_id=="615349880bd5ed0cdc5ea1b8")){
+		controladorfuncao = 4;
+	}else if(userData.nome == "Guest"){
+		controladorfuncao = 5;
+	};
+
+	if(controladorfuncao==4){
+		var data = await siteinfos.find({siteinfo_sitenum:{$nin:[1421,1551,2000,2504,4003,5506,6310]}}, {}).sort({ siteinfo_sitenum: 1 }).skip(contador).limit(50);
+		var dataSiteInfo = await siteinfos.find({},);
+		var total = dataSiteInfo.length;
+		var totalcont = Math.ceil(dataSiteInfo.length/50);
+
+		res.render("datacenter", {DataU:userData, dadostotalnr:parseInt(req.params.totalnr), dadoscontroladordecr:parseInt(req.params.contador), dadoscontroladorincr:incrementadr, Siteinfos:data, title: 'EAGLEI'});
+	}
+	else
+		if(userData.departamento_id=="61532251699ee012d00db4e7"){ 
+			switch (controladorfuncao) {
+				case 1:
+					var data = await siteinfos.find({siteinfo_sitenum:{$nin:[1421,1551,2000,2504,4003,5506,6310]}, siteinfo_maintoff:nome}, {}).sort({ siteinfo_sitenum: 1 }).skip(contador).limit(50);
+					var dataSiteInfo = await siteinfos.find({},);
+					var total = dataSiteInfo.length;
+					var totalcont = Math.ceil(dataSiteInfo.length/50);
+
+					res.render("datacenter", {DataU:userData, dadostotalnr:parseInt(req.params.totalnr), dadoscontroladordecr:parseInt(req.params.contador), dadoscontroladorincr:incrementadr, Siteinfos:data, title: 'EAGLEI'});	
+				break;
+
+				case 2:
+					var data = await siteinfos.find({siteinfo_sitenum:{$nin:[1421,1551,2000,2504,4003,5506,6310]}, siteinfo_provincia: userData.provincia_trabalho}, {}).sort({ siteinfo_sitenum: 1 }).skip(contador).limit(50);
+					var dataSiteInfo = await siteinfos.find({},);
+					var total = dataSiteInfo.length;
+					var totalcont = Math.ceil(dataSiteInfo.length/50);
+
+					res.render("datacenter", {DataU:userData, dadostotalnr:parseInt(req.params.totalnr), dadoscontroladordecr:parseInt(req.params.contador), dadoscontroladorincr:incrementadr, Siteinfos:data, title: 'EAGLEI'});	
+				break;
+
+				case 3:
+					var data = await siteinfos.find({siteinfo_sitenum:{$nin:[1421,1551,2000,2504,4003,5506,6310]}, siteinfo_regiaoselmec: userData.regiao}, {}).sort({ siteinfo_sitenum: 1 }).skip(contador).limit(50);
+					var dataSiteInfo = await siteinfos.find({},);
+					var total = dataSiteInfo.length;
+					var totalcont = Math.ceil(dataSiteInfo.length/50);
+
+					res.render("datacenter", {DataU:userData, dadostotalnr:parseInt(req.params.totalnr), dadoscontroladordecr:parseInt(req.params.contador), dadoscontroladorincr:incrementadr, Siteinfos:data, title: 'EAGLEI'});	
+				break;
+				case 5:
+					var data = await siteinfos.find({siteinfo_sitenum:{$nin:[1421,1551,2000,2504,4003,5506,6310]}, siteinfo_client: "Vm,Sa"}, {}).sort({ siteinfo_sitenum: 1 }).skip(contador).limit(50);
+					var dataSiteInfo = await siteinfos.find({},);
+					var total = dataSiteInfo.length;
+					var totalcont = Math.ceil(dataSiteInfo.length/50);
+
+					res.render("datacenter", {DataU:userData, dadostotalnr:parseInt(req.params.totalnr), dadoscontroladordecr:parseInt(req.params.contador), dadoscontroladorincr:incrementadr, Siteinfos:data, title: 'EAGLEI'});	
+				break;
+			}
+		}
+
+});
+
+
 
 router.get('/siteinfohomeElectricity', function(req, res){
 	var userData=req.session.usuario;
@@ -1441,6 +1645,9 @@ router.get('/siteinfohomeElectricity', function(req, res){
 		}
 	}).sort({ siteinfo_sitenum: 1 }).limit(50);
 });
+
+
+
 
 router.get('/siteinfohomeClimatizacao', function(req, res){
 	var userData=req.session.usuario;
